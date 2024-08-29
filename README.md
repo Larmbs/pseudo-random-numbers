@@ -29,11 +29,11 @@ For execution in software, xorshift generators are among the fastest PRNGs, requ
 Examples for 32, 64, and 128 bit integers
 ``` Rust
 struct XorShift32_State {
-    a: u32,
+    pub a: u32,
 }
 impl XorShift32_State { 
     pub fn generate(&mut self) -> u32 {
-        let x = self.a;
+        let mut x = self.a;
         x ^= x << 13;
         x ^= x >> 17;
         x ^= x << 5;
@@ -43,11 +43,11 @@ impl XorShift32_State {
 }
 
 struct XorShift64_State {
-    a: u64,
+    pub a: u64,
 }
 impl XorShift64_State { 
     pub fn generate(&mut self) -> u64 {
-        let x = self.a;
+        let mut x = self.a;
         x ^= x << 13;
         x ^= x >> 7;
         x ^= x << 17;
@@ -56,26 +56,26 @@ impl XorShift64_State {
     }
 }
 
-/* Can optionally be represented as two u64 values */
-struct XorShift128_State {
-    a: [4; u32],
+fn main() {
+    let mut gen = XorShift32_State {
+        a: 500,
+    };
+    println!("{}", gen.generate());
+    println!("{}", gen.generate());
+    println!("{}", gen.generate());
+    println!("{}", gen.generate());
+    println!("{}", gen.generate());
 }
-impl XorShift128_State { 
-    pub fn generate(&mut self) -> u128 {
-        let t = self.a[3];
-        let s = self.a[0]
+```
 
-        self.a[3] = self.a[2]
-        self.a[2] = self.a[1]
-        self.a[1] = s;
+## Usage
+Just a random number on its own isn't exactly useful, usually you'd want a random number to be within a certain range and not one where spanning from u32::min to u32::max. 
+To force values into a range between 0 and 1 is not too hard
 
-        t ^= t << 11;
-	    t ^= t >> 8;
-        self.a[0] = t ^ s ^ (s >> 19);
+```Rust
+let rand_num: u32 = ?;
 
-        self.a[0]
-    }
-}
+let float: f64 = (rand_num as f64) / (u32::Max as f64);
 ```
 
 ## Sources
